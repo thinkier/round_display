@@ -1,0 +1,14 @@
+name: Build UF2 on push
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: thinkier/pico-build@v1
+        with:
+          pimoroni-pico-vendor: thinkier
