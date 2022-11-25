@@ -1,58 +1,64 @@
-#include <string.h>
-#include <math.h>
-#include <vector>
+#include <cmath>
 #include <cstdlib>
 
 #include "drivers/st7789/st7789.hpp"
 #include "libraries/pico_graphics/pico_graphics.hpp"
-#include "time.h"
-
-// Place a 1.3 Round SPI LCD in the *front* slot of breakout garden.
 
 using namespace pimoroni;
-
 
 const int WIDTH = 240;
 const int HEIGHT = 240;
 
 ST7789 st7789(WIDTH, HEIGHT, ROTATE_0, true, get_spi_pins(BG_SPI_FRONT));
 PicoGraphics_PenRGB332 graphics(st7789.width, st7789.height, nullptr);
-Pen black = graphics.create_pen(0, 0, 0);
-Pen white = graphics.create_pen(255, 255, 255);
 
-void trivial_linear_arc(int d) {
-    float r = 118;
-    graphics.arc(
-            Point(WIDTH / 2, HEIGHT / 2),
-            Point(120 + (r * graphics.fast_sin(d)),
-                  120 + (r * graphics.fast_cos(d))),
-            270
-    );
-}
+Pen blk = graphics.create_pen(0x00, 0x00, 0x00);
+Pen wht = graphics.create_pen(0xFF, 0xFF, 0xFF);
+Pen red = graphics.create_pen(0xFF, 0x00, 0x00);
+Pen orn = graphics.create_pen(0xFF, 0xA5, 0x00);
+Pen ylw = graphics.create_pen(0xFF, 0xFF, 0x00);
+Pen grn = graphics.create_pen(0x00, 0x80, 0x00);
+Pen blu = graphics.create_pen(0x00, 0x00, 0xFF);
+Pen pur = graphics.create_pen(0x4B, 0x00, 0x82);
+Pen pnk = graphics.create_pen(0xEE, 0x82, 0xEE);
 
-void trivial_polygon_arc(int s) {
-    float r = 60;
+void rainbow(int8_t r, int8_t w) {
     graphics.arc(
-      Point(WIDTH / 2, HEIGHT / 2),
-      Point(120 + (r * graphics.fast_sin(s)),
-      120 + (r * graphics.fast_cos(s))),
-      270,
-      16
+        Point(WIDTH / 2, HEIGHT / 2),
+        Point(WIDTH / 2 + r, HEIGHT / 2),
+        180,
+        w
     );
 }
 
 int main() {
     st7789.set_backlight(255);
+    Point c(120, 120);
 
-    for (;;) {
-        for (uint16_t d = 0; d < 360; d++) {
-            graphics.set_pen(black);
-            graphics.clear();
-            graphics.set_pen(white);
-            trivial_linear_arc(d);
-            trivial_polygon_arc(d);
+    graphics.set_pen(blk);
+    graphics.clear();
 
-            st7789.update(&graphics);
-        }
+    // Demo of poly impl (rainbow)
+    graphics.set_pen(red);
+    rainbow(120, 10);
+    graphics.set_pen(orn);
+    rainbow(110, 10);
+    graphics.set_pen(ylw);
+    rainbow(100, 10);
+    graphics.set_pen(grn);
+    rainbow(90, 10);
+    graphics.set_pen(blu);
+    rainbow(80, 10);
+    graphics.set_pen(pur);
+    rainbow(70, 10);
+
+    graphics.set_pen(wht);
+    // Demo of pie
+    graphics.arc(c, Point(180, 180), -90, 85);
+    // Demo of line arc
+    for (int i = 0; i < 6; i++) {
+        graphics.arc(c, Point(239 - (i * 10), 120), -180);
     }
+
+    st7789.update(&graphics);
 }
