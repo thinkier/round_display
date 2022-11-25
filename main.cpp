@@ -20,7 +20,6 @@ Pen ylw = graphics.create_pen(0xFF, 0xFF, 0x00);
 Pen grn = graphics.create_pen(0x00, 0x80, 0x00);
 Pen blu = graphics.create_pen(0x00, 0x00, 0xFF);
 Pen pur = graphics.create_pen(0x4B, 0x00, 0x82);
-Pen pnk = graphics.create_pen(0xEE, 0x82, 0xEE);
 
 void rainbow(int8_t r, int8_t w) {
     graphics.arc(
